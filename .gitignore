@@ -1,0 +1,10 @@
+link-preview.iml
+.settings
+glide.lock
+.DS_Store
+*.log
+pkg
+bin
+vendor
+.project
+.idea
