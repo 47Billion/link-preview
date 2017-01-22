@@ -29,29 +29,13 @@ func init() {
 	fmt.Println("=>init handler")
 }
 
-type Get func(string) *oembed.Info
-type Set func(*oembed.Info, int64)
-
-type Cache struct {
-	getHandler Get
-	setHandler Set
-}
-
-func (c Cache) HandleCacheGet(f Get) {
-	c.getHandler = f
-}
-
-func (c Cache) HandleCacheSet(f Set) {
-	c.setHandler = f
-}
-
 type apiHandler struct {
-	cache      *Cache
+	cache      *cache
 	workerPool *tunny.WorkPool
 }
 
 func NewApiHandler(providersFile string, workerCount, maxHTMLBytesToRead, maxBinaryBytesToRead, waitTimeout int64,
-	whiteListRanges, blackListRanges string, cache *Cache) *apiHandler {
+	whiteListRanges, blackListRanges string, cache *cache) *apiHandler {
 	buf, err := ioutil.ReadFile(providersFile)
 	if err != nil {
 		panic(err)
@@ -174,7 +158,11 @@ func (api *apiHandler) processUrl(inputUrl string) (*oembed.Info, error) {
 		if data.Status != 200 {
 			return nil, errors.New("Unable to decode worker result")
 		}
-		return data.Data.(*oembed.Info), nil
+		info := data.Data.(*oembed.Info)
+		if nil != api.cache {
+			api.cache.setHandler(info, api.cache.ttl)
+		}
+		return info, nil
 	}
 	log.Print("Unable to decode worker result")
 	return nil, errors.New("Unable to decode worker result")
