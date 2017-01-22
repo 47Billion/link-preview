@@ -1,3 +1,6 @@
+/**
+* @author @47Billion
+**/
 package link_preview
 
 import "github.com/47Billion/link-preview/oembed"
