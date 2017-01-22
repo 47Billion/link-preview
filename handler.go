@@ -91,8 +91,7 @@ func NewApiHandler(providersFile string, workerCount, maxHTMLBytesToRead, maxBin
 
 //Call this while your instance goes down to release workers
 func (api *apiHandler) Release() {
-	defer api.workerPool.Close()
-	return
+	api.workerPool.Close()
 }
 
 func (api *apiHandler) UrlInfo(inputUrl string) *oembed.Info {
