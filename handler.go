@@ -162,7 +162,7 @@ func (api *ApiHandler) processUrl(inputUrl string) (*oembed.Info, error) {
 		}
 		info := data.Data.(*oembed.Info)
 		if nil != api.cache {
-			api.cache.setHandler(info, api.cache.ttl)
+			api.cache.setHandler(inputUrl, info, api.cache.ttl)
 		}
 		return info, nil
 	}
