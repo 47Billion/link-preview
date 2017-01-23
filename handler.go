@@ -32,13 +32,13 @@ func init() {
 	fmt.Println("=>init handler")
 }
 
-type apiHandler struct {
+type ApiHandler struct {
 	cache      *cache
 	workerPool *tunny.WorkPool
 }
 
 func NewApiHandler(providersFile string, workerCount, maxHTMLBytesToRead, maxBinaryBytesToRead, waitTimeout int64,
-	whiteListRanges, blackListRanges string, cache *cache) *apiHandler {
+	whiteListRanges, blackListRanges string, cache *cache) *ApiHandler {
 	buf, err := ioutil.ReadFile(providersFile)
 	if err != nil {
 		panic(err)
@@ -89,15 +89,15 @@ func NewApiHandler(providersFile string, workerCount, maxHTMLBytesToRead, maxBin
 		panic(err)
 	}
 
-	return &apiHandler{cache: cache, workerPool: pool}
+	return &ApiHandler{cache: cache, workerPool: pool}
 }
 
 //Call this while your instance goes down to release workers
-func (api *apiHandler) Release() {
+func (api *ApiHandler) Release() {
 	api.workerPool.Close()
 }
 
-func (api *apiHandler) UrlInfo(inputUrl string) *oembed.Info {
+func (api *ApiHandler) UrlInfo(inputUrl string) *oembed.Info {
 	info, err := api.processUrl(inputUrl)
 	if nil != err {
 		log.Println("=>UrlInfo", inputUrl, err)
@@ -105,7 +105,7 @@ func (api *apiHandler) UrlInfo(inputUrl string) *oembed.Info {
 	return info
 }
 
-func (api *apiHandler) HandleHttp(w http.ResponseWriter, r *http.Request) {
+func (api *ApiHandler) HandleHttp(w http.ResponseWriter, r *http.Request) {
 	//set default response headers
 	w.Header().Set("Content-Type", "application/json")
 	var input map[string]string
@@ -135,7 +135,7 @@ func (api *apiHandler) HandleHttp(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, info.String())
 }
 
-func (api *apiHandler) processUrl(inputUrl string) (*oembed.Info, error) {
+func (api *ApiHandler) processUrl(inputUrl string) (*oembed.Info, error) {
 	_, err := url.Parse(inputUrl)
 
 	if err != nil {
