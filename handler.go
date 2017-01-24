@@ -161,8 +161,9 @@ func (api *ApiHandler) processUrl(inputUrl string) (*oembed.Info, error) {
 			return nil, errors.New("Unable to decode worker result")
 		}
 		info := data.Data.(*oembed.Info)
+		info.URL = inputUrl
 		if nil != api.cache {
-			api.cache.setHandler(inputUrl, info, api.cache.ttl)
+			api.cache.setHandler(info, api.cache.ttl)
 		}
 		return info, nil
 	}

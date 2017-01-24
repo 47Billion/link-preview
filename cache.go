@@ -6,7 +6,7 @@ package link_preview
 import "github.com/47Billion/link-preview/oembed"
 
 type cacheGetFunc func(string) *oembed.Info
-type cacheSetFunc func(string, *oembed.Info, int64)
+type cacheSetFunc func(*oembed.Info, int64)
 
 type cache struct {
 	getHandler cacheGetFunc
@@ -26,7 +26,7 @@ func NewCache(ttl int64) *cache {
 	c := &cache{
 		ttl:        ttl,
 		getHandler: func(string) *oembed.Info { return nil },
-		setHandler: func(string, *oembed.Info, int64) {},
+		setHandler: func(*oembed.Info, int64) {},
 	}
 
 	return c
